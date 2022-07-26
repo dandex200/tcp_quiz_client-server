@@ -3,7 +3,7 @@
 <h2>Summary</h2>
 A TCP socket Client and Server quiz application written in C. The server establishes connection with the client, asks client if they wish to start quiz or quit, then randomly selects 5 questions and allows client to answer. At the end, quiz total of correct answers is displayed. 
 <h2>Screenshot</h2>
-[Screenshot](Screenshot.png)
+![Screenshot](Screenshot.png)
 <h2>Guide</h2>
   <ol>
     <li>Download server.c, client.c, and QuizDB.h</li>
