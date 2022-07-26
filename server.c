@@ -26,7 +26,7 @@ void func(int connfd)
     
     int i = 1;
 
-    // infinite loop for chat
+    // Infinite loop for chat
     for (;;) {
 
         //Part 1 - Start
@@ -37,7 +37,7 @@ void func(int connfd)
         read(connfd, buff, sizeof(buff)); //Read 1
         
         if(strncmp("Y", buff, 1) == 0){
-            write(connfd, "Start the quiz!", 15); //Send 2
+            write(connfd, "Start the quiz!", 15); //Send 1
             sleep(1);
             while(i <= 5) {
                 srand(time(NULL));
@@ -45,31 +45,31 @@ void func(int connfd)
                 char* q1 = QuizQ[q1place];
                 char* q1A = QuizA[q1place];
                         bzero(buff, MAX);
-                write(connfd, q1, strlen(q1));
+                write(connfd, q1, strlen(q1)); //Send 2
                 bzero(buff, MAX);
 
                 bzero(buff, MAX);
-                read(connfd, buff, sizeof(buff));
+                read(connfd, buff, sizeof(buff)); //Read 2
 
                 if(strcmp(q1A, buff) == 0){
-                    write(connfd, "Correct!", 8); //Send 6: Whether or not Q1 was correct
+                    write(connfd, "Correct!", 8); //Send 3
                     quiztotal++;
                     printf("\nCorrect! Q1A: %s and Client Response: %s\nDo they match?\nQuiz Total: %d\n", q1A, buff, quiztotal);
                 } else {
-                write(connfd, "Incorrect\n", 9); //Send 6: Whether or not Q1 was correct
+                write(connfd, "Incorrect\n", 9); //Send 3
                 printf("\nIncorrect. Q1A: %s and Client Response: %s\nDo they match?\nQuiz Total: %d\n", q1A, buff, quiztotal);
                 }
-                        sleep(1);
+                sleep(1);
                 i++;
             }
         } else {
-            write(connfd, "End Quiz", 8); //Send 2
+            write(connfd, "End Quiz", 8); //Send 4
             break;
         }
         char quiztotalsent[20];
         sprintf(quiztotalsent, "%d", quiztotal);
         bzero(buff, MAX);
-        write(connfd, quiztotalsent, strlen(quiztotalsent));
+        write(connfd, quiztotalsent, strlen(quiztotalsent)); //Send 5
 
         break;
 
@@ -82,8 +82,6 @@ int main()
 {
     int sockfd, connfd, len;
     struct sockaddr_in servaddr, cli;
-   
-    // socket create and verification
     sockfd = socket(AF_INET, SOCK_STREAM, 0);
     if (sockfd == -1) {
         printf("socket creation failed...\n");
@@ -93,12 +91,10 @@ int main()
         printf("Socket successfully created..\n");
     bzero(&servaddr, sizeof(servaddr));
    
-    // assign IP, PORT
     servaddr.sin_family = AF_INET;
     servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
     servaddr.sin_port = htons(PORT);
    
-    // Binding newly created socket to given IP and verification
     if ((bind(sockfd, (SA*)&servaddr, sizeof(servaddr))) != 0) {
         printf("socket bind failed...\n");
         exit(0);
@@ -106,7 +102,6 @@ int main()
     else
         printf("Socket successfully binded..\n");
    
-    // Now server is ready to listen and verification
     if ((listen(sockfd, 5)) != 0) {
         printf("Listen failed...\n");
         exit(0);
@@ -115,7 +110,6 @@ int main()
         printf("Server listening..\n");
     len = sizeof(cli);
    
-    // Accept the data packet from client and verification
     connfd = accept(sockfd, (SA*)&cli, &len);
     if (connfd < 0) {
         printf("server accept failed...\n");
@@ -124,9 +118,7 @@ int main()
     else
         printf("server accept the client...\n");
    
-    // Function for chatting between client and server
     func(connfd);
    
-    // After chatting close the socket
     close(sockfd);
 }
